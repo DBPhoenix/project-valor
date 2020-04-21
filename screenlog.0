@@ -1,0 +1,24 @@
+internal/modules/cjs/loader.js:979
+  throw err;
+  ^
+
+Error: Cannot find module '/home/phoenix/sambashare/project-valor/app.js'
+[90m    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:976:15)[39m
+[90m    at Function.Module._load (internal/modules/cjs/loader.js:859:27)[39m
+[90m    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)[39m
+[90m    at internal/main/run_main_module.js:17:47[39m {
+  code: [32m'MODULE_NOT_FOUND'[39m,
+  requireStack: []
+}
+internal/modules/cjs/loader.js:979
+  throw err;
+  ^
+
+Error: Cannot find module '/home/phoenix/sambashare/project-valor/app.js'
+[90m    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:976:15)[39m
+[90m    at Function.Module._load (internal/modules/cjs/loader.js:859:27)[39m
+[90m    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)[39m
+[90m    at internal/main/run_main_module.js:17:47[39m {
+  code: [32m'MODULE_NOT_FOUND'[39m,
+  requireStack: []
+}

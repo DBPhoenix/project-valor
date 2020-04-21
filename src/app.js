@@ -6,7 +6,7 @@ const fs = require('fs');
 const client = new Discord.Client({partials: ['MESSAGE', 'REACTION']});
 
 //JSON DATA:
-const sharedData = JSON.parse(fs.readFileSync("./private/shared_data.json"));
+const sharedData = JSON.parse(fs.readFileSync("../private/shared_data.json"));
 const TOKEN = sharedData.TOKEN;
 
 //CONSTANT IDS:
