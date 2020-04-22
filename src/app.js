@@ -13,10 +13,11 @@ const TOKEN = sharedData.TOKEN;
 const betaRoleID = '700995685348016130';
 const devRoleID = '702055729284251708';
 const reactMessageID = '702066087008927776';
+const guildID = '700994553636978749';
 const agents = ['Breach', 'Brimstone', 'Cypher', 'Jett', 'Omen', 'Phoeinx', 'Raze', 'Sage', 'Sova', 'Viper'];
 
 client.on('guildCreate', (guild) => {
-    if (guild.id !== '700994553636978749') {
+    if (guild.id !== guildID) {
         guild.systemChannel.send("Sorry, this Discord bot is only meant for PlayValorant DK. Please contact Phoenix#2855 for more information");
         console.warn("Bot joined another Guild: " + guild.id);
         guild.leave();
@@ -25,6 +26,43 @@ client.on('guildCreate', (guild) => {
 
 client.on('guildMemberAdd', (member) => {
     member.roles.add(betaRoleID);
+});
+
+client.on('voiceStateUpdate', (oldState, newState) => {
+    var guild = newState.guild;
+    if (guild.id === guildID) {
+        var emptyRooms = [];
+        var biggestIndex = 0;
+
+        guild.channels.cache.each((channel,id) => {
+            if (typeof channel !== 'undefined' && typeof channel.name !== 'undefined') {
+                if (channel.name.startsWith("Flex #")) {
+                    if(channel.members.array().length === 0) {
+                        emptyRooms.push(channel);
+                    }
+                    
+                    biggestIndex = Math.max(parseInt(channel.name.slice(6)), biggestIndex);
+                }
+            }
+        });
+
+        emptyRooms.sort((a, b) => a.name.localeCompare(b.name));
+        
+        if (emptyRooms.length === 0) {
+            guild.channels.create("Flex #" + (biggestIndex + 1), {
+                type: 'voice',
+                userLimit: 5,
+                parent: '700995169708933131',
+                position: biggestIndex + 1,
+                reason: 'All rooms filled'
+            })
+        }
+    
+        while(emptyRooms.length > 1) {
+            var emptyRoom = emptyRooms.pop();
+            emptyRoom.delete();
+        }
+    }
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
@@ -70,7 +108,7 @@ client.on('message', (msg) => {
     }
 });
 
-//FUNCTIONS
+//UTILITY FUNCTIONS
 function checkForDevPermission(guildMember) {
     guildMember.roles.cache.some(key => key === devRoleID);
 }
