@@ -1,6 +1,5 @@
-import { Guild, GuildChannel } from 'discord.js';
-
-const playValorantCategory: string = '700995169708933131';
+import { Guild, GuildChannel, GuildMember, PartialGuildMember } from 'discord.js';
+import { channelData, roleData } from './JSONFileHandler';
 
 function findFlexRooms(guild: Guild): GuildChannel[] {
     let flexRooms: GuildChannel[] = [];
@@ -35,11 +34,19 @@ export function manageFlexRooms(guild: Guild): GuildChannel[] {
         guild.channels.create("Flex #" + (lastNumber + 1), {
             type: 'voice',
             userLimit: 5,
-            parent: playValorantCategory,
+            parent: channelData["--- Play Valorant ---"]["id"],
             position: lastNumber + 1,
             reason: 'All rooms filled'
         });
     }
 
     return flexRooms;
+}
+
+export function addBetaRole(member: GuildMember | PartialGuildMember): Promise<GuildMember> {
+    return member.roles.add(roleData.beta);
+}   
+
+export function addMemberRole(member: GuildMember | PartialGuildMember): Promise<GuildMember> {
+    return member.roles.add(roleData.member);
 }

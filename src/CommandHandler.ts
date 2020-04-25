@@ -1,7 +1,9 @@
-import { Message, MessageAttachment } from 'discord.js';
+import { Message, MessageAttachment, VoiceChannel, Team } from 'discord.js';
 import { checkForDeveloper } from './ValorUtils';
+import { updateGuildData } from './JSONFileHandler';
 
 import * as EmbeddedMessages from './EmbeddedMessages';
+import * as TeamCommandHandler from './TeamCommandHandler';
 
 const agents = ['Breach', 'Brimstone', 'Cypher', 'Jett', 'Omen', 'Phoenix', 'Raze', 'Sage', 'Sova', 'Viper'];
 const maps = ['bind', 'haven', 'split'];
@@ -10,25 +12,16 @@ export function handleMessage(msg: Message): void {
     let args = msg.content.toLowerCase().split(" ");
     const command = args[0]; args.splice(0, 1);
 
-    if (command === 'v!commands') commands(msg);
     if (command === 'v!random') randomAgent(msg);
     if (command === 'v!map') sendMap(msg, args);
+    if (command === 'v!team') team(msg, args);
 
     if (command === 'v!admin') admin(msg, args);
 }
 
-function commands(msg: Message): void {
-    msg.channel.send(
-        "**VALOR'S COMMANDS**:\n" +
-        "v!commands - liste over alle commands.\n" +
-        "v!map <map> - sender et billede af den valgte map.\n" +
-        "v!random - en random agent til dem, der ikke ved, hvad de skal spille."
-    );
-}
-
 function randomAgent(msg: Message): void {
     const random = Math.floor(Math.random() * agents.length);
-    msg.reply("you should play: **" + agents[random] + "**");
+    msg.reply("du burde spille: **" + agents[random] + "**");
 }
 
 function sendMap(msg: Message, args: string[]): void {
@@ -37,6 +30,10 @@ function sendMap(msg: Message, args: string[]): void {
     } else {
         msg.channel.send("Ukendt Map. Usage: v!map <map>");
     }
+}
+
+function team(msg: Message, args: string[]): void {
+    if (args[0] === 'create') TeamCommandHandler.createChannel(msg, args);
 }
 
 function admin(msg: Message, args: string[]): void {
@@ -51,6 +48,9 @@ function admin(msg: Message, args: string[]): void {
             if (args[1] === 'overblik') setupOverblik(msg);
             if (args[1] === 'mainer') setupMainer(msg);
         }
+
+        if (args[0] === 'bitrate') checkBitRate(msg);
+        if (args[0] === 'syncdata') updateGuildData(msg.guild);
     }
 }
 
@@ -74,4 +74,20 @@ function setupMainer(msg: Message): void {
 
 function clearMessages(msg: Message, args: string[]): void {
     msg.channel.messages.fetch({ limit: parseInt(args[1]) }).then(messages => messages.each(message => message.delete()));
+}
+
+function checkBitRate(msg: Message) {
+    let output: string = '';
+
+    msg.guild.channels.cache.each((channel) => {
+        if(channel.type === 'voice') {
+            let warning: boolean = ((<VoiceChannel>channel).bitrate !== 64000);
+            if (warning) output += "**";
+            output += "Channel Name: " + channel.name + ", Bitrate: " + (<VoiceChannel>channel).bitrate;
+            if (warning) output += "**";
+            output += "\n";
+        }
+    });
+
+    msg.author.send(output);
 }

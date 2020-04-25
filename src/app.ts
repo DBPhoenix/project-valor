@@ -1,19 +1,21 @@
 'use strict';
 
 import { Client } from 'discord.js';
-import { readFileSync } from 'fs';
+import { privateKeys, updateGuildData } from './JSONFileHandler';
 
 import * as CommandHandler from './CommandHandler';
-import * as GuildMemberHandler from './GuildMemberHandler';
 import * as GuildHandler from './GuildHandler';
 import * as MessageHandler from './MessageHandler';
 
 const client = new Client({partials: ['MESSAGE', 'REACTION']});
-const sharedData = JSON.parse(readFileSync("../private/shared_data.json").toString());
-const TOKEN = sharedData.TOKEN;
+const TOKEN = privateKeys.TOKEN;
 
 //CONSTANT IDS:
 const guildID: string = '700994553636978749';
+
+client.on('ready', () => {
+    updateGuildData(client.guilds.resolve(guildID));
+});
 
 client.on('guildCreate', (guild) => {
     if (guild.id !== guildID) {
@@ -26,8 +28,8 @@ client.on('guildCreate', (guild) => {
 });
 
 client.on('guildMemberAdd', (member) => {
-    GuildMemberHandler.addBetaRole(member);
-    GuildMemberHandler.addMemberRole(member);
+    GuildHandler.addBetaRole(member);
+    GuildHandler.addMemberRole(member);
 });
 
 client.on('voiceStateUpdate', (oldState, newState) => {
