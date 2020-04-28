@@ -1,6 +1,8 @@
 import { Guild, GuildChannel, GuildMember, PartialGuildMember } from 'discord.js';
 import { channelData, roleData } from './JSONFileHandler';
 
+export const guildID: string = '700994553636978749';
+
 function findFlexRooms(guild: Guild): GuildChannel[] {
     let flexRooms: GuildChannel[] = [];
 
@@ -49,4 +51,15 @@ export function addBetaRole(member: GuildMember | PartialGuildMember): Promise<G
 
 export function addMemberRole(member: GuildMember | PartialGuildMember): Promise<GuildMember> {
     return member.roles.add(roleData.member);
+}
+
+export function externRejection(guild: Guild): Guild {
+    if (guild.id !== guildID) {
+        guild.systemChannel.send("Sorry, this Discord bot is only meant for PlayValorant Denmark. Please contact Phoenix#2855 for more information");
+        console.warn("Bot joined another Guild:");
+        console.warn("GuildName: " + guild.name);
+        console.warn("GuildID: " + guild.id);
+        guild.leave().then(guild => { return guild });
+    }
+    return guild;
 }

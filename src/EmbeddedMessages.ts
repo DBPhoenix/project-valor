@@ -23,9 +23,10 @@ export const overblikKanaler = new MessageEmbed()
     .setColor(phoenixColorHex)
     .setTitle('Oversigt over kanaler')
     .setDescription(
-        "<#" + channelData["regler"] + "> regler for serveren, sørg for at få dem læst, da der ikke står for meget.\n" +
-        "<#" + channelData["jeg-mainer"] + "> skriv, hvem I mainer her, så får I jeres role.\n" +
-        "<#" + channelData["server-forslag"] + "> her kan I skrive jeres forslag til serveren, hvis I har ting, der mangler, eller I føler, der skal ændres.\n\n" +
+        "<#" + channelData["regler"] + "> - regler for serveren, sørg for at få dem læst, da der ikke står for meget.\n" +
+        "<#" + channelData["jeg-mainer"] + "> - skriv, hvem I mainer her, så får I jeres role.\n" +
+        "<#" + channelData["server-forslag"] + "> - her kan I skrive jeres forslag til serveren, hvis I har ting, der mangler, eller I føler, der skal ændres.\n" +
+        "<#" + channelData["twitch-streams"] + "> - når Streamers går live, kan I se det her. Gå ind og følg dem og støt den danske Twitch Community.\n\n" +
         
         "--- Main Chats ---\n" +
         "<#" + channelData["--- Main Chats ---"]["general"] + "> - En generel chat for alt, hvad der sker.\n" +
@@ -86,7 +87,7 @@ export const regler4 = new MessageEmbed()
     .setColor(valorColorHex)
     .setTitle("#4 Ingen Reklame")
     .setDescription(
-        "Det er som udgangspunkt ikke lovligt at reklamere for andre Discord Servere, Facebook Sider m.m. Hvis du søger at få et opslag godkendt, så kontakt en <@&" + roleData.Moderator + ">."
+        "Det er som udgangspunkt ikke lovligt at reklamere for andre Discord Servere, Facebook Sider m.m. Hvis du søger at få et opslag godkendt, så kontakt en <@&" + roleData.Moderator + ">. Hvis du vil lave et opslag med din Twitch Stream, skal det gøres i <#" + channelData["twitch-streams"] + ">"
 );
 
 export const regler5 = new MessageEmbed()

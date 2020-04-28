@@ -1,40 +1,42 @@
 'use strict';
 
 import { Client } from 'discord.js';
-import { privateKeys, updateGuildData } from './JSONFileHandler';
 
+import * as JSONFileHandler from './JSONFileHandler';
 import * as CommandHandler from './CommandHandler';
 import * as GuildHandler from './GuildHandler';
 import * as MessageHandler from './MessageHandler';
+import { addMusicBot } from './MusicCommandHandler';
+
+import * as MelodyJett from './music_bots/MelodyJett';
+import * as MelodyPhoenix from './music_bots/MelodyPhoenix';
+import * as MelodySage from './music_bots/MelodySage';
 
 const client = new Client({partials: ['MESSAGE', 'REACTION']});
-const TOKEN = privateKeys.TOKEN;
+const TOKEN = JSONFileHandler.privateKeys.TOKEN;
 
-//CONSTANT IDS:
-const guildID: string = '700994553636978749';
-
-client.on('ready', () => {
-    updateGuildData(client.guilds.resolve(guildID));
+client.on('ready', async () => {
+    JSONFileHandler.updateGuildData(client.guilds.resolve(GuildHandler.guildID));
+    addMusicBot(await MelodyJett.instantiate());
+    addMusicBot(await MelodyPhoenix.instantiate());
+    addMusicBot(await MelodySage.instantiate());
+    console.log('Client is connected & ready!');
 });
 
 client.on('guildCreate', (guild) => {
-    if (guild.id !== guildID) {
-        guild.systemChannel.send("Sorry, this Discord bot is only meant for PlayValorant Denmark. Please contact Phoenix#2855 for more information");
-        console.warn("Bot joined another Guild:");
-        console.warn("GuildName: " + guild.name);
-        console.warn("GuildID: " + guild.id);
-        guild.leave();
-    }
+    GuildHandler.externRejection(guild);
 });
 
 client.on('guildMemberAdd', (member) => {
-    GuildHandler.addBetaRole(member);
-    GuildHandler.addMemberRole(member);
+    if (!member.user.bot) {
+        GuildHandler.addBetaRole(member);
+        GuildHandler.addMemberRole(member);
+    }
 });
 
 client.on('voiceStateUpdate', (oldState, newState) => {
     const guild = newState.guild;
-    if (guild.id === guildID) {
+    if (guild.id === GuildHandler.guildID) {
         GuildHandler.manageFlexRooms(guild);
     }
 });

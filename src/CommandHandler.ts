@@ -3,6 +3,7 @@ import { checkForDeveloper } from './ValorUtils';
 import { updateGuildData } from './JSONFileHandler';
 
 import * as EmbeddedMessages from './EmbeddedMessages';
+import * as MusicCommandHandler from './MusicCommandHandler';
 import * as TeamCommandHandler from './TeamCommandHandler';
 
 const agents = ['Breach', 'Brimstone', 'Cypher', 'Jett', 'Omen', 'Phoenix', 'Raze', 'Sage', 'Sova', 'Viper'];
@@ -14,6 +15,14 @@ export function handleMessage(msg: Message): void {
 
     if (command === 'v!random') randomAgent(msg);
     if (command === 'v!map') sendMap(msg, args);
+
+    if (command === 'v!join') MusicCommandHandler.handleMessage(msg, command);
+    if (command === 'v!play') MusicCommandHandler.handleMessage(msg, command);
+    if (command === 'v!resume') MusicCommandHandler.handleMessage(msg, command);
+    if (command === 'v!pause') MusicCommandHandler.handleMessage(msg, command);
+    if (command === 'v!skip') MusicCommandHandler.handleMessage(msg, command);
+    if (command === 'v!leave') MusicCommandHandler.handleMessage(msg, command);
+    
     if (command === 'v!team') team(msg, args);
 
     if (command === 'v!admin') admin(msg, args);
@@ -47,6 +56,8 @@ function admin(msg: Message, args: string[]): void {
         if (args[0] === 'setup') {
             if (args[1] === 'overblik') setupOverblik(msg);
             if (args[1] === 'mainer') setupMainer(msg);
+            if (args[1] === 'regler') setupRegler(msg);
+            if (args[1] === 'valor') setupValorCommands(msg);
         }
 
         if (args[0] === 'bitrate') checkBitRate(msg);
@@ -63,6 +74,19 @@ async function setupOverblik(msg: Message): Promise<void> {
     await msg.channel.send(EmbeddedMessages.overblikTeams);
 }
 
+async function setupRegler(msg: Message): Promise<void> {
+    await msg.channel.send(EmbeddedMessages.regler1);
+    await msg.channel.send(EmbeddedMessages.regler2);
+    await msg.channel.send(EmbeddedMessages.regler3);
+    await msg.channel.send(EmbeddedMessages.regler4);
+    await msg.channel.send(EmbeddedMessages.regler5);
+}
+
+async function setupValorCommands(msg: Message): Promise<void> {
+    await msg.channel.send("Missing Picture");
+    await msg.channel.send(EmbeddedMessages.commandsValor);
+}
+
 function setupMainer(msg: Message): void {
     msg.channel.send("React til denne besked med dem du mainer. Du kan godt vælge flere mains. Hvis du er i tvivl om, hvad emojies'ne viser, så står de i rækkefølge. :thumbsup:")
     .then(message => {
@@ -76,7 +100,7 @@ function clearMessages(msg: Message, args: string[]): void {
     msg.channel.messages.fetch({ limit: parseInt(args[1]) }).then(messages => messages.each(message => message.delete()));
 }
 
-function checkBitRate(msg: Message) {
+function checkBitRate(msg: Message): void {
     let output: string = '';
 
     msg.guild.channels.cache.each((channel) => {
