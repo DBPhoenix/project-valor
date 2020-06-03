@@ -1,7 +1,7 @@
 import { GuildEmoji, GuildMember, MessageReaction, User, PartialUser } from 'discord.js';
 import { getAgentRoleIDFromName } from './ValorUtils';
 
-const reactMessageID: string = '703234294864412712';
+export const reactMessageID: string = '704679784478670899';
 
 export async function addMainByEmote(reaction: MessageReaction, user: User | PartialUser): Promise<GuildMember> {
     if (reaction.message.id === reactMessageID) {

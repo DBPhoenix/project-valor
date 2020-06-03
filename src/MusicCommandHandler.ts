@@ -2,19 +2,20 @@ import { Message } from 'discord.js'
 
 import * as YoutubeHandler from './YoutubeHandler';
 
-import { MusicBot } from './music_bots/MelodyTemplate';
+import { MusicBot, MelodyTemplate } from './music_bots/MelodyTemplate';
 
 const musicBots: MusicBot[] = [];
 
 export function handleMessage(msg: Message, command: string) {
     if (msg.member.voice) {
 
-        if (command === 'v!join') join(msg);
-        if (command === 'v!play') play(msg, msg.content.split(" ").splice(1));
-        if (command === 'v!resume') resume(msg);
-        if (command === 'v!pause') pause(msg);
-        if (command === 'v!skip') skip(msg);
-        if (command === 'v!leave') leave(msg);
+        if (command === '!join') join(msg);
+        if (command === '!play') play(msg, msg.content.split(" ").splice(1));
+        if (command === '!resume') resume(msg);
+        if (command === '!pause') pause(msg);
+        if (command === '!skip') skip(msg);
+        if (command === '!leave') leave(msg);
+        if (command === '!loop') loop(msg);
 
     } else {
         msg.channel.send("You need to join a voice channel first.");
@@ -94,12 +95,14 @@ function leave(msg: Message): void {
     }
 }
 
-async function skip(msg: Message): Promise<void> {
+async function skip(msg: Message): Promise<string> {
     const musicBot = getBotByMessage(msg);
 
     if (musicBot !== null) {
-        if (musicBot.songQueue.length > 0) msg.channel.send((await musicBot.getSongTitleFromURL(musicBot.playNext())) + " blev skippet.");
-        else msg.channel.send("Song Queue empty.");
+        const out = await musicBot.getSongTitleFromURL(musicBot.playNext(<MelodyTemplate>musicBot));
+        if (out != null) msg.channel.send(out + " blev skippet.");
+        else msg.channel.send("Der bliver ikke afspillet nogen sang.");
+        return out;
     }
 }
 
@@ -129,4 +132,11 @@ async function play(msg: Message, args: string[]): Promise<string> {
     }
 
     return null;
+}
+
+function loop(msg: Message) {
+    const bot: MusicBot = getBotByMessage(msg);
+    bot.loop = !(bot.loop);
+    if (bot.loop) msg.channel.send("Queue looper.");
+    else msg.channel.send("Queue er stoppet med at loope.");
 }

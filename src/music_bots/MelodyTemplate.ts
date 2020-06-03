@@ -20,6 +20,7 @@ export class MelodyTemplate implements MusicBot {
     songQueue: string[] = new Array;
     timeSince: number = 0;
     currentSongURL: string;
+    loop: boolean = false;
 
     play(URL: string): string {
         if (URL === "") {
@@ -28,7 +29,6 @@ export class MelodyTemplate implements MusicBot {
         }
 
         this.songQueue.unshift(URL);
-
         this.resume();
 
         return URL;
@@ -47,6 +47,7 @@ export class MelodyTemplate implements MusicBot {
     }
 
     leave(): void {
+        this.songQueue = new Array;
         this.voiceConnection.disconnect();
         this.voiceConnection = undefined;
     }
@@ -63,21 +64,25 @@ export class MelodyTemplate implements MusicBot {
 
     resume(): void {
         if (this.voiceConnection !== undefined) {
-            if ((this.voiceConnection.dispatcher === undefined || this.voiceConnection.dispatcher === null) && this.songQueue.length > 0) this.playNext();
+            if ((this.voiceConnection.dispatcher === undefined || this.voiceConnection.dispatcher === null) && this.songQueue.length > 0) this.playNext(this);
             this.voiceConnection.dispatcher.resume();
         }
     }
 
-    playNext(): string {
-        const previous = this.currentSongURL;
-        if (this.songQueue.length > 0) {
-            const URL: string = this.songQueue.pop();
-            this.voiceConnection.play(ytdl(URL, { filter: 'audioonly' }));
-            this.currentSongURL = URL;
-            ytdl.getBasicInfo(URL).then((info) => {
-                setTimeout(this.playNext, Number(info.length_seconds) * 1000);
-            });
+    playNext(classReference: MelodyTemplate): string {
+        const previous = classReference.currentSongURL;
+        if (this.loop) classReference.songQueue.push(previous);
+        if (classReference.songQueue !== undefined) {
+            if (classReference.songQueue.length > 0) {
+                const URL: string = classReference.songQueue.pop();
+                classReference.voiceConnection.play(ytdl(URL, { filter: 'audioonly' }));
+                classReference.currentSongURL = URL;
+                ytdl.getBasicInfo(URL).then((info) => {
+                    setTimeout(function(){classReference.playNext(classReference);}, Number(info.length_seconds) * 1000);
+                });
+            } else if (classReference.voiceConnection !== undefined) classReference.voiceConnection.dispatcher.end();
         }
+        if (classReference.voiceConnection === null || classReference.voiceConnection === undefined || classReference.voiceConnection.dispatcher === null) return null;
         return previous;
     }
 
@@ -90,12 +95,13 @@ export interface MusicBot {
     displayName: string;
     voiceConnection: VoiceConnection;
     songQueue: string[];
+    loop: boolean;
     play(URL: string): string;
     pause(): void;
     join(channel: VoiceChannel): Promise<VoiceConnection>;
     leave(): void;
     isInUse(): boolean;
     resume(): void;
-    playNext(): string;
+    playNext(classRefenrece: MelodyTemplate): string;
     getSongTitleFromURL(URL: string): Promise<string>;
 }

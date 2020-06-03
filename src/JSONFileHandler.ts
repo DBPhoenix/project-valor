@@ -48,6 +48,20 @@ export function updateGuildData(guild: Guild): boolean {
     );
 }
 
+export function append(key: string, value: string, path: string) {
+    let data = JSON.parse(fs.readFileSync(path).toString());
+
+    data[key] = value;
+
+    writeJSON(path, JSON.stringify(data, null, 2));
+    return data;
+}
+
+export function read(path: string): any {
+    let output = JSON.parse(fs.readFileSync(path).toString());
+    return output;
+}
+
 export const channelData = JSON.parse(fs.readFileSync("../data/channels.json").toString());
 
 export const roleData = JSON.parse(fs.readFileSync("../data/roles.json").toString());

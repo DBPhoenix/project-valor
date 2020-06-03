@@ -1,7 +1,14 @@
-import { Guild, GuildChannel, GuildMember, PartialGuildMember } from 'discord.js';
+import { Guild, GuildChannel, GuildMember, PartialGuildMember, Message, Client, TextChannel, Collection, Invite } from 'discord.js';
 import { channelData, roleData } from './JSONFileHandler';
 
 export const guildID: string = '700994553636978749';
+
+let invites: Collection<string, Invite>;
+
+export async function getInvites(guild: Guild): Promise<Collection<string, Invite>> {
+    await guild.fetchInvites().then(invitesCollection => invites = invitesCollection);
+    return invites;
+}
 
 function findFlexRooms(guild: Guild): GuildChannel[] {
     let flexRooms: GuildChannel[] = [];
@@ -37,17 +44,14 @@ export function manageFlexRooms(guild: Guild): GuildChannel[] {
             type: 'voice',
             userLimit: 5,
             parent: channelData["--- Play Valorant ---"]["id"],
-            position: lastNumber + 1,
             reason: 'All rooms filled'
+        }).then(channel => {
+            channel.setPosition(lastNumber);
         });
     }
 
     return flexRooms;
 }
-
-export function addBetaRole(member: GuildMember | PartialGuildMember): Promise<GuildMember> {
-    return member.roles.add(roleData.beta);
-}   
 
 export function addMemberRole(member: GuildMember | PartialGuildMember): Promise<GuildMember> {
     return member.roles.add(roleData.member);
@@ -62,4 +66,25 @@ export function externRejection(guild: Guild): Guild {
         guild.leave().then(guild => { return guild });
     }
     return guild;
+}
+
+export function fetchMainerMessage(client: Client): Promise<void | Message> {
+    return client.channels.fetch(channelData["jeg-mainer"])
+    .then((channel: TextChannel) => {
+        channel.messages.fetch().then(collection => {
+            collection.first().fetch();
+        });
+    });
+}
+
+export function memberJoinLog(guildMember: GuildMember | PartialGuildMember) {
+    guildMember.guild.fetchInvites().then(guildInvites => {
+        let inviteCache = invites;
+    
+        invites = guildInvites;
+
+        const inviteLink = guildInvites.find(i => inviteCache.get(i.code).uses < i.uses);
+    
+        guildMember.guild.systemChannel.send(guildMember.displayName + " joinede fra invite link: " + inviteLink);
+    });
 }
