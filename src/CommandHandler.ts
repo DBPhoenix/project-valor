@@ -8,14 +8,14 @@ import * as EmbeddedMessages from './EmbeddedMessages';
 import * as MusicCommandHandler from './MusicCommandHandler';
 import * as TeamCommandHandler from './TeamCommandHandler';
 
-const agents = ['Breach', 'Brimstone', 'Cypher', 'Jett', 'Omen', 'Phoenix', 'Raze', 'Reyna', 'Sage', 'Sova', 'Viper'];
+const agents = ['Breach', 'Brimstone', 'Cypher', 'Jett', 'Killjoy', 'Omen', 'Phoenix', 'Raze', 'Reyna', 'Sage', 'Sova', 'Viper'];
 const maps = ['ascent', 'bind', 'haven', 'split'];
 
 export function handleMessage(msg: Message): void {
     let args = msg.content.toLowerCase().split(" ");
     const command = args[0]; args.splice(0, 1);
 
-    if (command === '!link') sendSocialLinks(msg);
+    if (command === '!link' || command === '!invite') sendSocialLinks(msg);
     if (command === '!random') randomAgent(msg);
     if (command === '!map') sendMap(msg, args);
 
@@ -32,6 +32,27 @@ export function handleMessage(msg: Message): void {
     if (command === '!creator') CreatorCommandHandler.handleMessage(msg, args);
 
     if (command === '!admin') admin(msg, args);
+}
+
+function admin(msg: Message, args: string[]): void {
+    msg.delete();
+
+    if (checkForDeveloper(msg.member)) {
+        if (args[0] === 'clear') clearMessages(msg, args);
+
+        if (args[0] === 'setup') {
+            if (args[1] === 'overblik') setupOverblik(msg);
+            if (args[1] === 'mainer') setupMainer(msg);
+            if (args[1] === 'regler') setupRegler(msg);
+            if (args[1] === 'valor') setupValorCommands(msg);
+        }
+
+        if (args[0] === 'setposition') setPosition(msg, args);
+        if (args[0] === 'bitrate') checkBitRate(msg);
+        if (args[0] === 'syncdata') JSONFileHandler.updateGuildData(msg.guild);
+        if (args[0] === 'displayname') getDisplayNameFromID(msg, args);
+        if (args[0] === 'updatemainer') updateMainMessage(msg);
+    }
 }
 
 function sendSocialLinks(msg: Message): Promise<Message> {
@@ -55,27 +76,6 @@ function sendMap(msg: Message, args: string[]): void {
 
 function team(msg: Message, args: string[]): void {
     if (args[0] === 'create') TeamCommandHandler.createChannel(msg, args);
-}
-
-function admin(msg: Message, args: string[]): void {
-    msg.delete();
-
-    if (checkForDeveloper(msg.member)) {
-        if (args[0] === 'clear') clearMessages(msg, args);
-
-        if (args[0] === 'setup') {
-            if (args[1] === 'overblik') setupOverblik(msg);
-            if (args[1] === 'mainer') setupMainer(msg);
-            if (args[1] === 'regler') setupRegler(msg);
-            if (args[1] === 'valor') setupValorCommands(msg);
-        }
-
-        if (args[0] === 'setposition') setPosition(msg, args);
-        if (args[0] === 'bitrate') checkBitRate(msg);
-        if (args[0] === 'syncdata') JSONFileHandler.updateGuildData(msg.guild);
-        if (args[0] === 'displayname') getDisplayNameFromID(msg, args);
-        if (args[0] === 'updatemainer') updateMainMessage(msg);
-    }
 }
 
 function setPosition(msg: Message, args: string[]) {
@@ -150,7 +150,6 @@ async function updateMainMessage(msg: Message): Promise<Message> {
         if (channel.id === JSONFileHandler.channelData["jeg-mainer"]) {
             (<TextChannel> channel).messages.cache.each((msg) => {
                 if (msg.id === reactMessageID) {
-                    const agents = ['Breach', 'Brimstone', 'Cypher', 'Jett', 'Omen', 'Phoenix', 'Raze', 'Reyna', 'Sage', 'Sova', 'Viper'];
                     const emojis = msg.guild.emojis.cache.filter(emoji => agents.includes(emoji.name));
                     emojis.sort((a, b) => a.name.localeCompare(b.name));
                     emojis.each(emoji => msg.react(emoji));
