@@ -1,12 +1,41 @@
 {
-    "dependencies": {
-        "@discordjs/opus": "^0.2.1",
-        "@types/node": "^13.13.21",
-        "discord.js": "^12.3.1",
-        "googleapis": "^49.0.0",
-        "node-forge": "^0.10.0",
-        "ts-node": "^8.10.2",
-        "typescript": "^3.9.7",
-        "ytdl-core": "^2.1.7"
-    }
+  "dependencies": {
+    "@discordjs/opus": "^0.2.1",
+    "@types/node": "^13.13.52",
+    "discord.js": "^12.3.1",
+    "googleapis": "^49.0.0",
+    "node-forge": "^0.10.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7",
+    "ytdl-core": "^2.1.7"
+  },
+  "name": "project-valor",
+  "description": "A Discord Bot for Valorant meant for use on PlayValorant DK. Discord Link: https://discord.gg/5RPdCUb.",
+  "version": "1.1.0",
+  "main": "./src/app.ts",
+  "scripts": {
+    "test": "ts-node ./src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DBPhoenix/project-valor.git"
+  },
+  "keywords": [
+    "discord",
+    "bot"
+  ],
+  "author": "Daniel Birn",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/DBPhoenix/project-valor/issues"
+  },
+  "homepage": "https://github.com/DBPhoenix/project-valor#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^14.0.0",
+    "eslint-plugin-import": "^2.24.2"
+  }
 }

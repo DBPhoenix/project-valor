@@ -4,16 +4,21 @@ import * as GuildHandler from '../GuildHandler';
 import { MelodyTemplate } from './MelodyTemplate';
 
 export async function instantiate(): Promise<MelodyTemplate> {
-    let client = new Client();
-    await client.login(JSONFileHandler.privateKeys.musicBots.melodyPhoenix);
+  const client = new Client();
+  await client.login(JSONFileHandler.privateKeys.musicBots.melodyPhoenix);
 
-    const guild = await client.guilds.resolve(GuildHandler.guildID)
+  const guild = await client.guilds.resolve(GuildHandler.guildID);
+  const { user } = client;
 
-    const displayName = (await guild.members.fetch(client.user)).displayName;
+  if (!guild || !user) {
+    throw Error();
+  }
 
-    client.on('guildCreate', guild => {
-        GuildHandler.externRejection(guild);
-    });
+  const { displayName } = await guild.members.fetch(user);
 
-    return new MelodyTemplate(client, guild, displayName);
+  client.on('guildCreate', (newGuild) => {
+    GuildHandler.externRejection(newGuild);
+  });
+
+  return new MelodyTemplate(client, guild, displayName);
 }
