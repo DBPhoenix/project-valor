@@ -118,7 +118,6 @@ export const commandsValor = new MessageEmbed()
     + '**--- Core ---**\n'
     + 'Core Commands er forskellige generelle kommands.\n'
     + '!link - sender et link til Discorden og Facebooken\n'
-    + '!map <map> - sender et billede af den valgte map.\n'
     + '!random - en random agent til dem, der ikke ved, hvad de skal spille.\n\n'
 
     + '**--- Teams ---**\n'

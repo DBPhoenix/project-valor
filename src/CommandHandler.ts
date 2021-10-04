@@ -13,8 +13,7 @@ import * as EmbeddedMessages from './EmbeddedMessages';
 import * as MusicCommandHandler from './MusicCommandHandler';
 import * as TeamCommandHandler from './TeamCommandHandler';
 
-const agents = ['Breach', 'Brimstone', 'Cypher', 'Jett', 'Killjoy', 'Omen', 'Phoenix', 'Raze', 'Reyna', 'Sage', 'Sova', 'Viper'];
-const maps = ['ascent', 'bind', 'haven', 'split'];
+const agents = ['Astra', 'Breach', 'Brimstone', 'Cypher', 'Jett', 'KAYO', 'Killjoy', 'Omen', 'Phoenix', 'Raze', 'Reyna', 'Sage', 'Skye', 'Sova', 'Viper', 'Yoru'];
 
 function setPosition(msg: Message, args: string[]) {
   try {
@@ -165,14 +164,6 @@ function randomAgent(msg: Message): void {
   msg.reply(`du burde spille: **${agents[random]}**`);
 }
 
-function sendMap(msg: Message, args: string[]): void {
-  if (maps.includes(args[0])) {
-    msg.channel.send(new MessageAttachment(`../resources/maps/${args[0]}-map.jpg`));
-  } else {
-    msg.channel.send('Ukendt Map. Usage: v!map <map>');
-  }
-}
-
 function team(msg: Message, args: string[]): void {
   if (args[0] === 'create') TeamCommandHandler.createChannel(msg, args);
 }
@@ -183,7 +174,6 @@ export function handleMessage(msg: Message): void {
 
   if (command === '!link' || command === '!invite') sendSocialLinks(msg);
   if (command === '!random') randomAgent(msg);
-  if (command === '!map') sendMap(msg, args);
 
   if (command === '!join') MusicCommandHandler.handleMessage(msg, command);
   if (command === '!play') MusicCommandHandler.handleMessage(msg, command);
