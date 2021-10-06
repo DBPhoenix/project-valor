@@ -55,7 +55,7 @@ async function join(msg: Message): Promise<MusicBot | null> {
 
   if (availableBots.length > 0) {
     const musicBot = availableBots[Math.floor(Math.random() * availableBots.length)];
-    await musicBot.join(msg.member.voice.channel);
+    await musicBot.join(channel);
     msg.channel.send(`${musicBot.displayName} joinede!`);
     return musicBot;
   }

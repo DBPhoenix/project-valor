@@ -21,7 +21,6 @@ client.on('ready', async () => {
   }
 
   await new Promise((r) => setTimeout(r, 1000));
-  JSONFileHandler.updateGuildData(guild);
 
   addMusicBot(await MelodyJett.instantiate());
   addMusicBot(await MelodyPhoenix.instantiate());

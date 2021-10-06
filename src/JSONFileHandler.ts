@@ -16,10 +16,10 @@ function channelDataToJSON(guild: Guild): string {
   guild.channels.cache.each((channel) => {
     if (channel.type === 'category') {
       channelData[channel.name] = { id: channel.id };
-    } else if (channel.parent === null) {
+    } else if (!channel.parent) {
       channelData[channel.name] = channel.id;
     } else {
-      const parentChannel = channelData[channel.name] as {
+      const parentChannel = channelData[channel.parent.name] as {
         id: string;
         [channelName: string]: string;
       };
