@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@discordjs/opus": "^0.2.1",
+    "@discordjs/opus": "^0.8.0",
     "@types/node": "^13.13.52",
     "discord.js": "^12.3.1",
     "googleapis": "^49.0.0",
